@@ -1580,6 +1580,14 @@ impl<'a> PartialEq<&'a HeaderName> for HeaderName {
     }
 }
 
+
+impl<'a> PartialEq<HeaderName> for &'a HeaderName {
+    #[inline]
+    fn eq(&self, other: &HeaderName) -> bool {
+        *other == *self
+    }
+}
+
 impl PartialEq<str> for HeaderName {
     /// Performs a case-insensitive comparison of the string against the header
     /// name
@@ -1587,15 +1595,35 @@ impl PartialEq<str> for HeaderName {
     /// # Examples
     ///
     /// ```
-    /// use http::*;
+    /// use http::header::CONTENT_LENGTH;
     ///
-    /// assert_eq!(header::CONTENT_LENGTH, "content-length");
-    /// assert_eq!(header::CONTENT_LENGTH, "Content-Length");
-    /// assert_ne!(header::CONTENT_LENGTH, "content length");
+    /// assert_eq!(CONTENT_LENGTH, "content-length");
+    /// assert_eq!(CONTENT_LENGTH, "Content-Length");
+    /// assert_ne!(CONTENT_LENGTH, "content length");
     /// ```
     #[inline]
     fn eq(&self, other: &str) -> bool {
         eq_ignore_ascii_case(self.as_ref(), other.as_bytes())
+    }
+}
+
+
+impl PartialEq<HeaderName> for str {
+    /// Performs a case-insensitive comparison of the string against the header
+    /// name
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use http::header::CONTENT_LENGTH;
+    ///
+    /// assert_eq!(CONTENT_LENGTH, "content-length");
+    /// assert_eq!(CONTENT_LENGTH, "Content-Length");
+    /// assert_ne!(CONTENT_LENGTH, "content length");
+    /// ```
+    #[inline]
+    fn eq(&self, other: &HeaderName) -> bool {
+        *other == *self
     }
 }
 
@@ -1605,6 +1633,16 @@ impl<'a> PartialEq<&'a str> for HeaderName {
     #[inline]
     fn eq(&self, other: &&'a str) -> bool {
         *self == **other
+    }
+}
+
+
+impl<'a> PartialEq<HeaderName> for &'a str {
+    /// Performs a case-insensitive comparison of the string against the header
+    /// name
+    #[inline]
+    fn eq(&self, other: &HeaderName) -> bool {
+        *other == *self
     }
 }
 
